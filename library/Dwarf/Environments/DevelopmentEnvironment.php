@@ -2,19 +2,27 @@
 
 namespace Dwarf\Environments;
 
-class DevelopmentEnvironment extends \Dwarf\Environment {
+class DevelopmentEnvironment extends Dwarf\Environment {
     
-    protected $logHandle;
+    protected $logStream;
     
     public function log( $message, $severity = self::LOG_INFO ) {
         
-        
+        $this->logStream->writeLine( $message );
     }
     
     public function bind() {
         parent::bind();
         
-        $this->logHandle = fopen( $this->getConfig( 'logFile', 'log.txt' ) )
+        $this->logStream = Dwarf\Stream::openWrite( $this->getConfig( 'logFile', 'default.log' ) );
+    }
+    
+    public function unbind() {
+        parent::unbind();
+        
+        //will (hopefully, but still testing) close and destruct correctly
+        //(even though PHP does it in the end, anyways)
+        $this->logStream = null;
     }
     
     public function handleError( $code, $message, $file, $line ) {

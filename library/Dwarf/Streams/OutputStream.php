@@ -2,10 +2,16 @@
 
 namespace Dwarf\Streams;
 
-class OutputStream extends FileStream {
+class OutputStream extends Dwarf\Stream {
     
-    public function __construct() {
+    public function __construct( $data = null ) {
         
-        parent::__construct( 'php://output', static::MODE_WRITE );
+        parent::__construct( 'php://output', self::MODE_WRITE );
+        
+        if( $data ) {
+            
+            $this->write( $data );
+            $this->seekStart();
+        }
     }
 }

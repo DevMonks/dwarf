@@ -123,7 +123,7 @@ abstract class Environment extends Object {
         }
         
         if( !$instance )
-            throw new EnvironmentException( "$env is not a valid environment" );
+            throw new EnvironmentException( "$env is not a valid environment", $this );
         
         if( $config )
             $instance->setConfig( $config );

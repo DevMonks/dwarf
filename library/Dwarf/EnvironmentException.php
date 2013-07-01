@@ -4,12 +4,17 @@ namespace Dwarf;
 
 class EnvironmentException extends Exception {
     
-    protected $env;
+    protected $environment;
     
     public function __construct( $message, $env = null, $code = 0 ) {
         
-        $this->env = $env;
+        $this->environment = $env;
         
         parent::__construct( $message, $code );
+    }
+    
+    public function getEnvironment() {
+        
+        return $this->environment;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Dwarf\Streams;
 
-class InputStream extends FileStream {
+class InputStream extends Dwarf\Stream {
     
     public function __construct() {
         
-        parent::__construct( 'php://input', static::MODE_READ );
+        parent::__construct( 'php://input', self::MODE_READ );
     }
 }

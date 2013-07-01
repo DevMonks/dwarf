@@ -15,4 +15,10 @@ class Object {
         
         return "[$class Object]";
     }
+    
+    /* Conversion methods */
+    public function toString() {
+        
+        return (string)$this;
+    }
 }
