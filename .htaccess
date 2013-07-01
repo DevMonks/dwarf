@@ -1,0 +1,12 @@
+SetEnv DWARF_ENV development
+
+RewriteEngine On
+
+Options FollowSymLinks -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+RewriteRule ^(.+)$ index.php?__REQUEST__=$1 [QSA,L]

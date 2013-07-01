@@ -1,0 +1,46 @@
+{
+    "name": "devmonks/dwarf",
+    "description": "Dwarf Framework",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "dwarf"
+    ],
+    "homepage": "http://dwarf.devmonks.net/",
+    "license": "LGPL-2.1+",
+    
+    "suggest": {},
+    
+    
+    
+    "repositories": [ {
+        "type": "package",
+        "package": {
+            "name": "devmonks/visualphpunit",
+            "version": "1.0",
+            "source": {
+                "url": "https://github.com/DevMonks/VisualPHPUnit.git",
+                "type": "git",
+                "reference": "master"
+            }
+        }
+    } ],
+    
+    
+    "require": {
+        "php": ">=5.3.3"
+    },
+            
+    "require-dev": {
+        "doctrine/annotations": ">=1.0",
+        "phpunit/PHPUnit": "3.7.*",
+        "devmonks/visualphpunit": "1.0"
+    },
+            
+    
+    "autoload": {
+        "psr-0": {
+            "Dwarf\\": "library/"
+        }
+    }
+}
