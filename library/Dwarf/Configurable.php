@@ -1,5 +1,7 @@
 <?php
 
+namespace Dwarf;
+
 trait Configurable {
     
     protected $configDefaults = array();
