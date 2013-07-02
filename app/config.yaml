@@ -1,0 +1,19 @@
+app:
+  controllers:
+    directory: controllers
+    startController: home
+    defaultAction: index
+    namespace: ControllerNamespace
+  models:
+    directory: models
+    namespace: ModelNamespace
+    check:
+      - Account
+      - Profile
+      - Channel
+  views:
+    directory: views
+  db:
+    dsn: mysql:host=localhost;dbname=test
+    user: root
+    pass: ""

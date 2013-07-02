@@ -13,7 +13,7 @@ class Path extends Object implements \IteratorAggregate, \Countable {
     
     public function exists() {
         
-        return $this->isDir() 
+        return $this->isDirectory() 
              ? true 
              : stream_resolve_include_path( $this->path );
     }

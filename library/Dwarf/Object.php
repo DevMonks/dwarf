@@ -16,9 +16,8 @@ class Object {
         return "[$class Object]";
     }
     
-    /* Conversion methods */
-    public function toString() {
+    public static function box( $value ) {
         
-        return (string)$this;
+        return $value instanceof static ? $value : new static( $value );
     }
 }

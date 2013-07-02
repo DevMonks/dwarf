@@ -87,6 +87,11 @@ class Stream extends Object {
         $this->close();
     }
     
+    public function getResource() {
+        
+        return $this->resource;
+    }
+    
     public function read( $length = 1 ) {
         
         return fread( $this->resource, $length );
@@ -95,6 +100,34 @@ class Stream extends Object {
     public function readLine() {
         
         return fgets( $this->resource );
+    }
+    
+    public function readLines( $rewind = false ) {
+        
+        $this->seekStart();
+        while( !feof( $this->resource ) ) {
+            
+            yield $this->readLine();
+        }
+        
+        //re-wind
+        if( $rewind )
+            $this->seekStart();
+    }
+    
+    public function readCsvLine( $delimeter = ';', $enclosure = '"' ) {
+        
+        return fgetcsv( $this->resource, 0, $delimeter, $enclosure );
+    }
+    
+    public function readCsvLines( $delimeter = ';', $enclosure = '"', $rewind = false ) {
+        
+        $this->seekStart();
+        while( !feof( $this->resource ) )
+            yield $this->readCsvLine( $delimeter, $enclosure );
+        
+        if( $rewind )
+            $this>seekStart();
     }
     
     public function readAll( $rewind = false ) {
@@ -106,19 +139,6 @@ class Stream extends Object {
             $this->seekStart();
         
         return $data;
-    }
-    
-    public function readLines( $rewind = false ) {
-        
-        $this->seekStart();
-        while( !feof( $this->resource ) ) {
-            
-            yield fgets( $this->resource );
-        }
-        
-        //re-wind
-        if( $rewind )
-            $this->seekStart();
     }
     
     public function write( $data ) {
@@ -144,6 +164,19 @@ class Stream extends Object {
                 $this->write( $line );
             else
                 $this->writeLine( $line );
+        
+        return $this;
+    }
+    
+    public function writeCsvLine( array $data, $delimeter = ';', $enclosure = '"' ) {
+        
+        fputcsv( $this->resource, $data, $delimeter, $enclosure );
+    }
+    
+    public function writeCsvLines( array $data, $delimeter = ';', $enclosure = '"' ) {
+        
+        foreach( $data as $row )
+            $this->writeCsvLine( $row, $delimeter, $enclosure );
         
         return $this;
     }
@@ -219,11 +252,5 @@ class Stream extends Object {
         $this->writable = false;
         
         return $this;
-    }
-    
-    /* Conversion Methods */
-    public function toResource() {
-        
-        return $this->resource;
     }
 }

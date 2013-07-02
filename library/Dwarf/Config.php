@@ -2,12 +2,14 @@
 
 namespace Dwarf;
 
-class Config implements \IteratorAggregate {
+class Config extends Container {
     
-    protected $config;
-    
-    public function getIterator() {
+    public static function load( $path, $parser = null ) {
         
-        return new ArrayIterator( $this->config );
+        $path = Path::box( $path );
+        
+        $data = Parser::load( $path, $parser );
+        
+        return new static( $data );
     }
 }

@@ -46,7 +46,7 @@ class StreamTest extends PHPUnit_Framework_TestCase {
         $s = new Dwarf\Stream( TEST_FOLDER.'/FileWithContent.log' );
         
         $iterations = 0;
-        $res = $s->toResource();
+        $res = $s->getResource();
         
         while( !feof( $res ) ) {
             fgets( $res );
