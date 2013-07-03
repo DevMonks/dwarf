@@ -2,6 +2,6 @@
 
 namespace Dwarf;
 
-class Controller extends ConfigurableObject {
+class Controller extends Object {
     
 }

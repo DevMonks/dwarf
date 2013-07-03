@@ -2,7 +2,7 @@
 
 namespace Dwarf;
 
-class ModelController extends ConfigurableObject {
+class ModelLoader extends Loader {
     
     protected $db;
     
@@ -14,16 +14,9 @@ class ModelController extends ConfigurableObject {
             'check' => []
         ] );
         $this->setConfig( $config );
-    }
-    
-    public function enable() {
         
-        spl_autoload_register( [ $this, 'load' ] );
-    }
-    
-    public function disable() {
-        
-        spl_autoload_unregister( [ $this, 'load' ] );
+        if( !empty( $this->getConfig( 'check' ) ) )
+            $this->checkIntegrity();
     }
     
     public function setDb( Db $db ) {
@@ -42,7 +35,7 @@ class ModelController extends ConfigurableObject {
         //accordingly (based on the "check" setting, true for ALL tables)
     }
     
-    protected function load( $class ) {
+    public function load( $class ) {
         
         //strip the namespace
         $model = $class;

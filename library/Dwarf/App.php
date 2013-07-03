@@ -2,13 +2,14 @@
 
 namespace Dwarf;
 
-class App extends ConfigurableObject {
+class App extends Object {
+    use Configurable;
     
-    protected $controllerController;
-    protected $modelController;
-    protected $viewController;
+    protected $controllerLoader;
+    protected $modelLoader;
+    protected $viewLoader;
     
-    public function __construct( $config = null ) {
+    public function __construct( $config = [] ) {
         
         $this->setConfig( [
             'directory' => 'app'
@@ -20,35 +21,34 @@ class App extends ConfigurableObject {
         $viewConfig = $this->getConfig( 'views' );
         
         //extend the paths (make them relative to app path)
-        if( $controllerConfig
-         && $controllerConfig->directory )
-            $controllerConfig->directory = Path::combine( 
-                $this->getConfig( 'directory' ), 
-                $controllerConfig->directory,
-                false
-        );
+        foreach( [ $controllerConfig, $modelConfig, $viewConfig ] as $cfg )
+                
+            if( $cfg
+             && $cfg->directory )
+                $cfg->directory = Path::combine( 
+                    $this->getConfig( 'directory' ), 
+                    $cfg->directory,
+                    false
+            );
         
-        if( $viewConfig
-         && $viewConfig->directory )
-            $viewConfig->directory = Path::combine( 
-                $this->getConfig( 'directory' ), 
-                $viewConfig->directory,
-                false
-        );
+        $this->viewLoader = new ViewLoader( $viewConfig );
+        $controllerConfig->viewLoader = $this->viewLoader;
+        $this->controllerLoader = new ControllerLoader( $controllerConfig );
+        $this->modelLoader = new ModelLoader( $modelConfig );
         
-        if( $modelConfig
-         && $modelConfig->directory )
-            $modelConfig->directory = Path::combine( 
-                $this->getConfig( 'directory' ), 
-                $modelConfig->directory,
-                false
-        );
+        $this->enableLoaders();
+    }
+    
+    public function enableLoaders() {
         
-        $this->viewController = new ViewController( $viewConfig );
-        $this->controllerController = new ControllerController( $controllerConfig );
-        $this->modelController = new ModelController( $modelConfig );
+        foreach( [ $this->viewLoader, $this->controllerLoader, $this->modelLoader ] as $loader )
+            $loader->enable();
+    }
+    
+    public function disableLoaders() {
         
-        $this->controllerController->setViewController( $this->viewController );
+        foreach( [ $this->viewLoader, $this->controllerLoader, $this->modelLoader ] as $loader )
+            $loader->disable();
     }
     
     public static function run( $directory, $config = null ) {
@@ -60,9 +60,7 @@ class App extends ConfigurableObject {
         if( isset( $cfg->app ) && !isset( $cfg->app->directory ) )
             $cfg->app->directory = $directory;
         
-        var_dump( $cfg );
-        
-        $app = new static( isset( $cfg->app ) ? $cfg->app : null );
+        $app = new static( isset( $cfg->app ) ? $cfg->app : [] );
         //TODO: Routing etc.
         
         return $app;

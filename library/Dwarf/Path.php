@@ -6,7 +6,13 @@ class Path extends Object implements \IteratorAggregate, \Countable {
     
     protected $path;
     
-    public function __construct( $path ) {
+    public function __construct( $path = null ) {
+        
+        if( $path )
+            $this->set( $path );
+    }
+    
+    public function set( $path ) {
         
         $this->path = $path;
     }

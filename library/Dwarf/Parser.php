@@ -2,7 +2,8 @@
 
 namespace Dwarf;
 
-abstract class Parser extends ConfigurableObject {
+abstract class Parser extends Object {
+    use Configurable;
     
     public function __construct( $config = null ) {
         

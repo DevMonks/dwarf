@@ -2,7 +2,7 @@
 
 namespace Dwarf\Streams;
 
-class InputStream extends Dwarf\Stream {
+class InputStream extends \Dwarf\Stream {
     
     public function __construct() {
         

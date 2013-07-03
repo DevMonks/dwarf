@@ -2,7 +2,7 @@
 
 namespace Dwarf;
 
-class ConfigurableObject extends Object {
+trait Configurable {
     
     protected $config;
     
@@ -23,6 +23,9 @@ class ConfigurableObject extends Object {
     }
     
     public function setConfig( $config, $value = null ) {
+        
+        if( !$config )
+            return $this;
         
         if( !isset( $this->config ) )
             $this->config = new Config;

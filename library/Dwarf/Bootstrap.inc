@@ -1,6 +1,6 @@
 <?php
 
-if( version_compare( PHP_VERSION, '5.5.0' ) >= 0 ) {
+if( version_compare( PHP_VERSION, '5.5.0' ) < 0 ) {
 
 	?>
 	<h1>Time to upgrade!</h1>
@@ -27,15 +27,8 @@ if( file_exists( 'vendor/autoload.php' ) ) {
 
     //Set the current directory as include path and initiate autoloader
     set_include_path( __DIR__.PATH_SEPARATOR.get_include_path() );
-    spl_autoload_register( function( $class ) {
-
-        $path = str_replace( [ '_', '\\' ], '/', $class ).'.php';
-
-        if( stream_resolve_include_path( $path ) ) {
-
-            include $path;
-        }
-
-        return class_exists( $class, false );
-    } );
+    include 'Loader.php';
+    
+    $loader = new Dwarf\Loader;
+    $loader->enable();
 }

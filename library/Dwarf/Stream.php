@@ -25,16 +25,16 @@ class Stream extends Object {
      * 
      */
     
-    const MODE_READ = 'r';
-    const MODE_READ_WRITE = 'r+';
-    const MODE_WRITE = 'w';
-    const MODE_READ_WRITE_TRUNCATE = 'w+';
-    const MODE_APPEND = 'a';
-    const MODE_READ_APPEND = 'a+';
-    const MODE_WRITE_NEW = 'x';
-    const MODE_READ_WRITE_NEW = 'x+';
-    const MODE_WRITE_CREATE = 'c';
-    const MODE_READ_WRITE_CREATE = 'c';
+    const MODE_READ = 'rb';
+    const MODE_READ_WRITE = 'r+b';
+    const MODE_WRITE = 'wb';
+    const MODE_READ_WRITE_TRUNCATE = 'w+b';
+    const MODE_APPEND = 'ab';
+    const MODE_READ_APPEND = 'a+b';
+    const MODE_WRITE_NEW = 'xb';
+    const MODE_READ_WRITE_NEW = 'x+b';
+    const MODE_WRITE_CREATE = 'cb';
+    const MODE_READ_WRITE_CREATE = 'cb';
     
     protected $metaData;
     protected $resource;
@@ -44,17 +44,19 @@ class Stream extends Object {
 
     public function __construct( $path, $mode = self::MODE_READ ) {
         
+        $mode = trim( $mode, 'b' ).'b';
+        
         if( is_resource( $path ) )
             $this->resource = $path;
-        else if( $path instanceof Path || is_string( $path ) )
+        else if( $path instanceof Object || is_string( $path ) )
             $this->resource = fopen( (string)$path, $mode, true );
         else
             throw new InvalidArgumentException( 'path', 'resource, string or Path instance' );
         
         $this->metaData = stream_get_meta_data( $this->resource );
         
-        //correct the mode, specific for streams that work without modes
-        $mode = $this->metaData[ 'mode' ];
+        //correct the mode, specific for streams that work without initial modes
+        $mode = trim( $this->metaData[ 'mode' ], 'b' ).'b';
         
         if( in_array( $mode, [ 
             self::MODE_READ, 
@@ -245,7 +247,8 @@ class Stream extends Object {
     
     public function close() {
         
-        fclose( $this->resource );
+        if( is_resource( $this->resource ) )
+            fclose( $this->resource );
         
         $this->seekable = false;
         $this->readable = false;

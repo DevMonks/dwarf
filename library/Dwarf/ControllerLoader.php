@@ -2,10 +2,10 @@
 
 namespace Dwarf;
 
-class ControllerController extends ConfigurableObject {
+class ControllerLoader extends Loader {
     
     protected $db;
-    protected $viewController;
+    protected $viewLoader;
     
     public function __construct( $config = [] ) {
         
@@ -13,32 +13,27 @@ class ControllerController extends ConfigurableObject {
             'directory' => 'controllers',
             'namespace' => '',
             'startController' => 'home',
-            'defaultAction' => 'index'
+            'defaultAction' => 'index',
+            'viewController' => null
         ] );
         $this->setConfig( $config );
+        
+        if( $this->getConfig( 'viewController' ) )
+            $this->viewController = $this->getConfig( 'viewController' );
     }
     
-    public function setViewController( ViewController $viewController ) {
+    public function setViewLoader( ViewLoader $viewLoader ) {
         
-        $this->viewController = $viewController;
+        $this->viewLoader = $viewLoader;
+        $this->setConfig( 'viewLoader', $this->viewLoader );
     }
     
-    public function getViewController() {
+    public function getViewLoader() {
         
-        if( !isset( $this->viewController ) )
-            $this->viewController = new ViewController( $this->getConfig( 'views' ) );
+        if( !isset( $this->viewLoader ) )
+            $this->viewLoader = new ViewLoader( $this->getConfig( 'views' ) );
         
-        return $this->viewController;
-    }
-    
-    public function enable() {
-        
-        spl_autoload_register( [ $this, 'load' ] );
-    }
-    
-    public function disable() {
-        
-        spl_autoload_unregister( [ $this, 'load' ] );
+        return $this->viewLoader;
     }
     
     public function setDb( Db $db ) {
@@ -56,7 +51,10 @@ class ControllerController extends ConfigurableObject {
         //TODO: write logic
     }
     
-    protected function load( $class ) {
+    public function load( $class ) {
+        
+        if( !preg_match( '/Controller$/', $class ) )
+                return false;
         
         //strip the namespace
         $controller = $class;
@@ -73,7 +71,7 @@ class ControllerController extends ConfigurableObject {
             str_replace( 
                 [ '_', '\\' ], 
                 DIRECTORY_SEPARATOR, 
-                preg_replace( '/Controller$/', $controller ).'.php'
+                preg_replace( '/Controller$/', '', $controller ).'.php'
             )
         );
         

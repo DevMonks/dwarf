@@ -12,6 +12,16 @@ class Container extends Object implements \IteratorAggregate, \ArrayAccess {
             $this->merge( $data );
     }
     
+    public function getArray() {
+        
+        return $this->data;
+    }
+    
+    public function setArray( array $data ) {
+        
+        $this->data = $data;
+    }
+    
     public function getIterator() {
         
         return new \ArrayIterator( $this->data );
